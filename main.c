@@ -229,6 +229,176 @@ bool testaFinalTabuleiro(int tabu[4][4]){
   return true; //Se for igual
 }
 
+int RetornaLinha(int numero, int tabu[4][4]){
+  int posicao;
+  for(int i = 0; i < 4; i++){
+    for(int j = 0; j < 4; j++){
+      if(numero==tabu[i][j]){
+        posicao = i;
+      }
+    }
+  }
+  return posicao;
+}
+
+int RetornaColuna(int numero, int tabu[4][4]){
+  int posicao;
+  for(int i = 0; i < 4; i++){
+    for(int j = 0; j < 4; j++){
+      if(numero==tabu[i][j]){
+        posicao = j;
+      }
+    }
+  }
+  return posicao;
+}
+
+//Função implementada para verificar se o número pode ser movido para a posição 00 no tabuleiro
+bool PosicaoCorreta(int numero, int tabu[4][4], int posicao [2]){
+  int linha = posicao[0];
+  int coluna = posicao[1];
+  if(linha == 0){ //Se o número estiver na primera linha
+    if(coluna == 0){
+      //Número na posicao (0,0)
+      if(tabu[linha][coluna+1] == 0){ //Direita
+        return true;
+      }else{ 
+        if(tabu[linha+1][coluna] == 0){ //Baixo
+          return true;
+        }else{
+          return false;
+        }
+      }
+    }
+    if(coluna == 1 || coluna == 2){
+      //Número na posição (0,1) ou (0,2)
+      if(tabu[linha][coluna+1] == 0){ //Direita
+        return true;
+      }else{
+        if(tabu[linha][coluna-1] == 0){ //Esquerda
+          return true;
+        }else{
+          if(tabu[linha+1][coluna]==0){ //Baixo
+            return true;
+          }else{
+            return false;
+          }
+        }
+      }
+    }
+    if(coluna == 3){
+      //Número na posição (0,3)
+      if(tabu[linha][coluna-1] == 0){ //Esquerda
+        return true;
+      }else{
+        if(tabu[linha+1][coluna] == 0){ //Baixo
+          return true;
+        }else{
+          return false;
+        }
+      }
+    }
+  }
+  if(linha == 1 || linha == 2){ //Se o número estiver na linha segunda ou terceira linha
+    if(coluna == 0){
+      //Número na posição (1,0) ou (2,0)
+      if(tabu[linha][coluna+1] == 0){ //Direita
+        return true;
+      }else{
+        if(tabu[linha-1][coluna] == 0){ //Cima
+          return true;
+        }else{
+          if(tabu[linha+1][coluna] == 0){
+            return true;
+          }else{
+            return false;
+          }
+        }
+      }
+    }
+    if(coluna == 1 || coluna == 2){
+      //Número na posição (1,1) | (1,2) | (2,1) | (2,2)
+      if(tabu[linha][coluna+1] == 0){ //Direita
+        return true;
+      }else{
+        if(tabu[linha][coluna-1] == 0){ //Esquerda
+          return true;
+        }else{
+          if(tabu[linha-1][coluna] == 0){ //Cima
+            return true;
+          }else{
+            if(tabu[linha+1][coluna] == 0){ //Baixo
+              return true;
+            }else{
+              return false;
+            }
+          }
+        }
+      }
+    }
+    if(coluna == 3){
+      //Número na posicao (1,3) ou (2,3)
+      if(tabu[linha][coluna-1] == 0){ //Esquerda
+        return true;
+      }else{
+        if(tabu[linha-1][coluna] == 0){ //Cima
+          return true;
+        }else{
+          if(tabu[linha+1][coluna] == 0){ //Baixo
+            return true;
+          }else{
+            return false;
+          }
+        }
+      }
+    }
+  }
+  if(linha == 3){ //Se o número estiver na ultima linha
+    if(coluna == 0){
+      //Número na posição (3,0)
+      if(tabu[linha][coluna+1] == 0){ //Direita
+        return true;
+      }else{
+        if(tabu[linha-1][coluna] == 0){ //Cima
+          return true;
+        }else{
+          return false;
+        }
+      }
+    }
+    if(coluna == 1 || coluna == 2){
+      //Número na posição (3,1) ou (3,2)
+      if(tabu[linha][coluna+1] == 0){ //Direita
+        return true;
+      }else{
+        if(tabu[linha][coluna-1] == 0){ //Esquerda
+          return true;
+        }else{
+          if(tabu[linha-1][coluna] == 0){ //Cima
+            return true;
+          }else{
+            return false;
+          }
+        }
+      }
+    }
+    if(coluna == 3){
+      //Número na posição (3,3)
+      if(tabu[linha][coluna-1] == 0){ //Esquerda
+        return true;
+      }else{
+        if(tabu[linha-1][coluna] == 0){ //Cima
+          return true;
+        }else{
+          return false;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+
 //Função implementada para iniciar o MODO DE JOGO
 void Jogar(){
   system("clear"); //Limpar tela
@@ -236,6 +406,12 @@ void Jogar(){
   int tabu[4][4]; //Matriz criada para ser utilizada como tabuleiro
   int cont = 0; //Contador da posição do vetor
   int teste = 0; //Variável de teste para poder sair do "DO" caso tenha dado certo a operação da função "testeVariavel"
+  int numero; //Número que a pessoa deseja mover
+  int auxiliar; //Recebe o valor do número e troca de posição com o 00
+  int pontos =0; //Conta o número de jogadas
+  char nomejogador [50]; //Armazena o nome do jogador quando ele ganhar 
+  int posicao [2]; //Posicao do número no tabuleiro
+  int posicaozero [2]; //Posição do número 0 no tabuleiro
   srand((unsigned)time(NULL)); //Gerando seed aleátoria para o rand() - funçao que gera números aleatorios
   for(int i = 0; i < 64; i++){ //Gerando 64 números aleatorios de 1 a 15
     tabuaux[i]= 1 + (rand() % 15); //Gerando números aleatorios de 1 a 15 para o vetor auxiliar
@@ -257,7 +433,39 @@ void Jogar(){
     }
   }
   tabu[3][3]=0; //Colocando a posição zero no tabuleiro
-  ImprimeTabuleiro(tabu);
+  do{
+    system("clear");
+    ImprimeTabuleiro(tabu);
+    printf("\n Informe qual número deseja mover para o espaço vazio...");
+    scanf("%d", &numero);
+    if(numero < 15){
+      posicao[0] = RetornaLinha(numero, tabu);
+      posicao[1] = RetornaColuna(numero, tabu);
+      if(PosicaoCorreta(numero, tabu, posicao) == true){
+        //Retirar Codiugo daqui
+        for(int i = 0; i < 4; i++){
+          for(int j = 0; j < 4; j++){
+            if(tabu[i][j] == 0){
+              posicaozero[0] = i;
+              posicaozero[1] = j;
+            }
+          }
+        }
+        //Ate aqui
+        auxiliar = tabu[posicao[0]][posicao[1]];
+        tabu[posicao[0]][posicao[1]] = 0;
+        tabu[posicaozero[0]][posicaozero[1]] = auxiliar;
+        pontos++;
+      }else{
+        printf("\n O número informado não pode trocar de casa com a posição 0");
+        system("sleep 01");
+      }
+    }else{
+      printf("\n Número informado é incorreto, se deseja sair, por favor, digite o número 16 \n");
+      system("sleep 01");
+    }
+
+  }while(testaFinalTabuleiro(tabu)!=true || numero != 16);
 }
 
 // -----------------------------------------
