@@ -26,9 +26,9 @@ espaço vazio para mover as peças.
 //FIM DOS INCLUDES
 
 
-// Função implementada para enfeitar a inicialização do jogo e apresentar uma mensagem de boas vindas 
+//Função implementada para enfeitar a inicialização do jogo e apresentar uma mensagem de boas vindas 
 void CarregarJogo(){
-  for(int i = 0; i < 3 ; i++){ // For para apresentar a tela de Carregamento - ENFEITE
+  for(int i = 0; i < 3 ; i++){ // For para apresentar a tela de Carregamento - VISUAL
     printf("\n"); //Pular linha
     printf("\n Carregando o jogo");
     system("sleep 01"); //Delay de 1 segundo
@@ -46,21 +46,21 @@ void CarregarJogo(){
     system("sleep 01"); //Delay de 1 segundo
     system("clear"); //Limpar tela    
   } // Final do for
-  printf("\n");
+  printf("\n"); //Pular linha
   system("clear"); //Limpar tela
   system("sleep 01"); //Delay de 1 segundo
+  //Impriminto tela de Boas Vindas - Deixar o jogo mais bonito - VISUAL
   printf("|--------------------------------|\n");
   printf("|                                |\n");
   printf("|         BEM VINDO AO           |\n");
   printf("|          JOGO DO 15            |\n");
   printf("|             :)                 |\n");
   printf("|--------------------------------|\n");
-}
-//------------------------------------------ PRONTO
+} //------------------------------------------ PRONTO
 
-//Função implementada para embelezar a opção SAIR
+//Função implementada para embelezar a opção SAIR - VISUAL
 void SairDoJogo(){
-  printf("\n");
+  printf("\n"); //Pular linha
   printf("\n Salvando configurações... ");
   system("sleep 01"); //Delay de 1 segundo
   system("clear"); // Limpar tela
@@ -91,24 +91,24 @@ int ImprimeMenu(){
 
 //Função implementada para exibir as REGRAS
 void Regras(){
-  printf("\n");
-  system("clear");
-  FILE *regra;
-  char LinhaRegra[100];
-  char *resultadoRegra;
-  regra = fopen("regras.txt", "rt");
-  if(regra == NULL){
+  printf("\n"); //Pular linha
+  system("clear"); //Limpar tela
+  FILE *regra; //Criando arquivo
+  char LinhaRegra[100]; //Vetor para impressão das linhas do arquivo
+  char *resultadoRegra; //Ponteiro para leitura do arquivo
+  regra = fopen("regras.txt", "rt"); //Abrindo arquivo para leitura
+  if(regra == NULL){ //Verificando se o arquivo possui informações
     printf("-----------------------------------\n");
     printf("Não foi possível carregar as regras\n");
     printf("-----------------------------------\n");
-  }
-  printf("\n");
+  } //Fim IF verifica informações
+  printf("\n"); //Pular linha
   while(!feof(regra)){
     resultadoRegra = fgets(LinhaRegra, 100, regra);
     printf("  %s", LinhaRegra);
   }
   char sairRegra[2];
-  printf("\n \n ");
+  printf("\n \n "); //Pular duas linha
   printf("Pressione qualquer letra para continuar...");
   scanf("%s",&sairRegra);
   printf("\n");
@@ -134,8 +134,7 @@ void Ranking(){
     resultado = fgets(Linha, 100, rank);
     printf("    %s", Linha);
   }
-  printf("\n");
-  printf("\n");
+  printf("\n \n"); //Pular duas linha
   printf(" ---------------- \n");
   char tecla[5];
   printf("Aperte qualquer letra para continuar...");
@@ -145,34 +144,35 @@ void Ranking(){
 //------------------------------------------ PRONTO
 
 //Função implementada para imprimir tabuleiro
-void ImprimeTabuleiro (int tabu[4][4]){
-  printf("TABULEIRO: \n");
-  printf("\n");
-  printf("|-------------|\n");
+void ImprimeTabuleiro (int tabu[4][4]){ //Recebe uma matriz de inteiros como parametro
+  printf("TABULEIRO: \n"); //Cabeçalho do tabuleiro
+  printf("\n"); //Pular linha
+  printf("|-------------|\n"); //Borda superior
   for(int i = 0; i < 4; i++){ //Linha
     for(int j = 0; j < 4; j++){ //Coluna
-      if(j==0){
-        printf("| ");
+      if(j==0){ //Verifica se é o primeiro número da coluna para inserir a borda
+        printf("| "); //Borda lateral esquerda
       }
-      if(tabu[i][j] < 10){
-        printf("0%d ",tabu[i][j]);
+      if(tabu[i][j] < 10){ //Verifica se o número da natriz é menor que 10
+        printf("0%d ",tabu[i][j]); //Imprime um 0 na frente do número (ex: o número 1 vira 01)
+        //implementado para deixar a matriz alinhada
       }else{
-        printf("%d ",tabu[i][j]);
+        printf("%d ",tabu[i][j]); //Imprime o número da matriz
       }
-      if(j==3){
-        printf("|");
-        if(i==0){
+      if(j==3){ //Verifica se é o último número da coluna para inserir a borda
+        printf("|"); //Borda lateral direita
+        if(i==0){ //Verifica se é a primeira linha da matriz
           printf("    A casa em branco");
-        }
-        if(i==1){
+        } //Fim IF primeira linha
+        if(i==1){ //Verifica se é a segunda linha da matriz
           printf("    se refere ao número 00");
-        }
-      }
-    }
-    printf("\n");
-  }
-  printf("|-------------|\n");
-  printf("\n");
+        } //Fim IF segunda linha 
+      } //Fim IF último coluna 
+    } //Fim FOR Coluna
+    printf("\n"); //Pular linha
+  } //Fim FOR Linha
+  printf("|-------------|\n"); //Borda inferior
+  printf("\n"); //Pular linha
 }
 
 //Função implementada para fazer testes enquanto é gerado o Tabuleiro
@@ -201,21 +201,49 @@ int testeVariavel(int numero, int tabu[4][4], int i, int j){
   return 1;
 }
 
+void ComoJogar(){
+  system("clear");
+  printf("------------- COMO JOGAR ---------------\n");
+  printf(" Para jogar você deverá ordenar os");
+  printf("\n números em ordem crescente da esquerda");
+  printf("\n para direita e de cima para baixo");
+  printf("\n\n Para jogar você deverá digitar o número");
+  printf("\n que deseja mover quando for solicidado");
+  printf("\n");
+  char tecla[5];
+  printf("\nAperte qualquer letra para continuar...");
+  scanf("%s",&tecla);
+  system("clear");
+}
+
+//Função implementada para verificar a finalizção do tabuleiro
+bool testaFinalTabuleiro(int tabu[4][4]){
+  int tabucerto[4][4]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0}; //Gerando tabuleiro certo
+  for(int i = 0; i < 4; i++){
+    for(int j = 0; j < 4; j++){
+      if(tabucerto[i][j] != tabu[i][j]){
+        return false; //Se não for igual
+      }
+    }
+  }
+  return true; //Se for igual
+}
+
 //Função implementada para iniciar o MODO DE JOGO
 void Jogar(){
-  system("clear");
-  int tabuaux [64];
-  int tabu[4][4];
-  int cont = 0;
-  int teste = 0;
-  srand((unsigned)time(NULL));
+  system("clear"); //Limpar tela
+  int tabuaux [64]; //Vetor criado para pegar números aleatorios para o tabuleiro
+  int tabu[4][4]; //Matriz criada para ser utilizada como tabuleiro
+  int cont = 0; //Contador da posição do vetor
+  int teste = 0; //Variável de teste para poder sair do "DO" caso tenha dado certo a operação da função "testeVariavel"
+  srand((unsigned)time(NULL)); //Gerando seed aleátoria para o rand() - funçao que gera números aleatorios
   for(int i = 0; i < 64; i++){ //Gerando 64 números aleatorios de 1 a 15
-    tabuaux[i]= 1 + (rand() % 15);
+    tabuaux[i]= 1 + (rand() % 15); //Gerando números aleatorios de 1 a 15 para o vetor auxiliar
   }
   printf("\n");
   //Gerando o tabuleiro com os números aleatorios gerados
-  for(int i = 0; i < 4; i++){ 
-    for(int j = 0; j < 4; j++){
+  for(int i = 0; i < 4; i++){ //Linha
+    for(int j = 0; j < 4; j++){ //Coluna
       do{
         if(testeVariavel(tabuaux[cont], tabu, i, j)==1){
           teste = 1;
@@ -228,8 +256,7 @@ void Jogar(){
       cont ++;
     }
   }
-  //Colocando a posição zero no tabuleiro
-  tabu[3][3]=0;
+  tabu[3][3]=0; //Colocando a posição zero no tabuleiro
   ImprimeTabuleiro(tabu);
 }
 
@@ -246,6 +273,7 @@ int main(void) {
     scanf("%d", &opcao);
     switch(opcao){
       case 1: // Escolha JOGAR
+        ComoJogar();
         Jogar();
         break; 
       case 2: // Escolha RANKING
