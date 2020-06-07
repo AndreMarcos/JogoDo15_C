@@ -438,7 +438,7 @@ void Jogar(){
     ImprimeTabuleiro(tabu);
     printf("\n Informe qual número deseja mover para o espaço vazio...");
     scanf("%d", &numero);
-    if(numero < 15){
+    if(numero < 16){
       posicao[0] = RetornaLinha(numero, tabu);
       posicao[1] = RetornaColuna(numero, tabu);
       if(PosicaoCorreta(numero, tabu, posicao) == true){
