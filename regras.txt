@@ -8,7 +8,7 @@ _____________________________________________________________________
 |  * O movimento das peças só pode ser feito utilizando o           |
 |    espaço vazio.                                                  |
 |                                                                   |
-|  * Para desistir a pessoa deverá pressionar a tecla: "P".         |
+|  * Para desistir a pessoa deverá digitar o número: "16".          |
 |                                                                   |
 |  * O jogo só estará finalizado quando os números estiverem        |
 |    organizados da esquerda para a direita, de cima a baixo, com   |

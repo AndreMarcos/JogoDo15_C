@@ -18,6 +18,7 @@ espaço vazio para mover as peças.
 
 // Os includes servem para importar bibliotecas já existentes no direório do C ou criadas pelo desenvolvedor
 #include <stdio.h>   //Biblioteca padrão
+#include <string.h>  //Biblioteca string
 #include <stdlib.h>  //Biblioteca de propósito geral padrão
 #include <stdbool.h> //Biblioteca de variáveis lógicas
 #include <time.h>    //Biblioteca de manipulação de tempo
@@ -140,6 +141,7 @@ void Ranking(){
   printf("Aperte qualquer letra para continuar...");
   scanf("%s",&tecla);
   system("clear");
+  fclose(rank);
 }
 //------------------------------------------ PRONTO
 
@@ -208,7 +210,7 @@ void ComoJogar(){
   printf("\n números em ordem crescente da esquerda");
   printf("\n para direita e de cima para baixo");
   printf("\n\n Para jogar você deverá digitar o número");
-  printf("\n que deseja mover quando for solicidado");
+  printf("\n que deseja mover para a posição 00 (vazia) quando for solicidado");
   printf("\n");
   char tecla[5];
   printf("\nAperte qualquer letra para continuar...");
@@ -217,16 +219,16 @@ void ComoJogar(){
 }
 
 //Função implementada para verificar a finalizção do tabuleiro
-bool testaFinalTabuleiro(int tabu[4][4]){
-  int tabucerto[4][4]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0}; //Gerando tabuleiro certo
-  for(int i = 0; i < 4; i++){
-    for(int j = 0; j < 4; j++){
-      if(tabucerto[i][j] != tabu[i][j]){
-        return false; //Se não for igual
+int testaFinalTabuleiro(int tabu[4][4], int tabucerto[4][4]){
+  //0 - FALSO | 1 - VERDADEIRO
+  for(int i = 0; i < 4; i++){ //Testa linha
+    for(int j = 0; j < 4; j++){ //Testa coluna
+      if(tabu[i][j] != tabucerto[i][j]){
+        return 0; //Se não for igual
       }
     }
   }
-  return true; //Se for igual
+  return 1; //Se for igual
 }
 
 int RetornaLinha(int numero, int tabu[4][4]){
@@ -398,20 +400,45 @@ bool PosicaoCorreta(int numero, int tabu[4][4], int posicao [2]){
   return false;
 }
 
+void SalvarResultado(int pontos){
+  char nomejogador [50];
+  printf("\n PARABÉNS VOCÊ GANHOU !!");
+  printf("\n\n Número de jogadas: %d",pontos); //Exibindo pontuação
+  printf("\n Insira seu nome para o ranking: ");
+  scanf("%s", &nomejogador); //Recebendo nome do jogador
+  FILE *rank; //Declarando o arquivo
+  rank = fopen("ranking.txt", "a"); //Abrir documento
+  char escrita [100];
+  char espaço [] = " ";
+  char enter [] = "\n";
+  strcat(escrita, nomejogador);
+  strcat(escrita, espaço);
+  //strcat(escrita, pontos);
+  fputs(escrita, rank);
+  strcat(escrita, enter); 
+  printf("%s", escrita);
+  int tamanho = sizeof(escrita);
+  char resultado = fputs(escrita, rank);
+  if(resultado == EOF){
+    printf("\n Falha na gravação do resultado");
+  }
+  fclose(rank);
+}
 
 //Função implementada para iniciar o MODO DE JOGO
 void Jogar(){
   system("clear"); //Limpar tela
   int tabuaux [64]; //Vetor criado para pegar números aleatorios para o tabuleiro
   int tabu[4][4]; //Matriz criada para ser utilizada como tabuleiro
+  int tabucerto[4][4]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0}; //Gerando tabuleiro certo
   int cont = 0; //Contador da posição do vetor
   int teste = 0; //Variável de teste para poder sair do "DO" caso tenha dado certo a operação da função "testeVariavel"
   int numero; //Número que a pessoa deseja mover
   int auxiliar; //Recebe o valor do número e troca de posição com o 00
   int pontos =0; //Conta o número de jogadas
-  char nomejogador [50]; //Armazena o nome do jogador quando ele ganhar 
   int posicao [2]; //Posicao do número no tabuleiro
   int posicaozero [2]; //Posição do número 0 no tabuleiro
+  int retornoFinal = 0;
   srand((unsigned)time(NULL)); //Gerando seed aleátoria para o rand() - funçao que gera números aleatorios
   for(int i = 0; i < 64; i++){ //Gerando 64 números aleatorios de 1 a 15
     tabuaux[i]= 1 + (rand() % 15); //Gerando números aleatorios de 1 a 15 para o vetor auxiliar
@@ -432,11 +459,11 @@ void Jogar(){
       cont ++;
     }
   }
-  tabu[3][3]=0; //Colocando a posição zero no tabuleiro
+  tabu[3][3]=0; //Colocando a posição zero no tabuleiro 
   do{
     system("clear");
     ImprimeTabuleiro(tabu);
-    printf("\n Informe qual número deseja mover para o espaço vazio...");
+    printf("\n Informe qual número deseja mover para o espaço vazio: ");
     scanf("%d", &numero);
     if(numero < 16){
       posicao[0] = RetornaLinha(numero, tabu);
@@ -457,15 +484,28 @@ void Jogar(){
         tabu[posicaozero[0]][posicaozero[1]] = auxiliar;
         pontos++;
       }else{
-        printf("\n O número informado não pode trocar de casa com a posição 0");
+        printf("\n O número informado não pode trocar de casa com a posição 0\n\n");
         system("sleep 01");
       }
     }else{
-      printf("\n Número informado é incorreto, se deseja sair, por favor, digite o número 16 \n");
-      system("sleep 01");
+      if(numero != 16){
+        printf("\n Número informado é incorreto, se deseja sair, por favor, digite o número 16 \n");
+        system("sleep 01");
+      }
     }
-
-  }while(testaFinalTabuleiro(tabu)!=true || numero != 16);
+    retornoFinal = testaFinalTabuleiro(tabucerto,tabucerto); //Verifica se o tabuleiro está completo
+  }while((numero =! 16 ) || (retornoFinal != 1)); //Verifica se a pessoa pressionou o número para saida OU se completou o tabuleiro
+  printf("\n"); //Pula linha
+  system("clear"); //Limpa tela
+  if(retornoFinal == 1){ //Verificando se a pessoa saiu por ter ganhado
+    SalvarResultado(pontos);
+    printf("\n"); //Pula linha
+    system("clear"); //Limpa tela
+    printf("\n Salvando seus dados...");
+    system("sleep 01");
+    printf("\n");
+    system("clear");
+  }
 }
 
 // -----------------------------------------
