@@ -26,6 +26,11 @@ espaço vazio para mover as peças.
 
 //FIM DOS INCLUDES
 
+typedef struct Jogador{
+    char nome[50];
+    int jogadas;
+} Jogador;
+
 
 //Função implementada para enfeitar a inicialização do jogo e apresentar uma mensagem de boas vindas 
 void CarregarJogo(){
@@ -402,23 +407,25 @@ bool PosicaoCorreta(int numero, int tabu[4][4], int posicao [2]){
 
 void SalvarResultado(int pontos){
   char nomejogador [50];
+  Jogador j1;
   printf("\n PARABÉNS VOCÊ GANHOU !!");
   printf("\n\n Número de jogadas: %d",pontos); //Exibindo pontuação
   printf("\n Insira seu nome para o ranking: ");
-  scanf("%s", &nomejogador); //Recebendo nome do jogador
+  scanf("%c", &j1.nome);
+  j1.jogadas = pontos;
   FILE *rank; //Declarando o arquivo
   rank = fopen("ranking.txt", "a"); //Abrir documento
-  char escrita [100];
+  /* char escrita [100];
   char espaço [] = " ";
   char enter [] = "\n";
-  strcat(escrita, nomejogador);
+  strcat(escrita, j1.nome);
   strcat(escrita, espaço);
-  //strcat(escrita, pontos);
-  fputs(escrita, rank);
+  strcat(escrita, j1.jogadas);
   strcat(escrita, enter); 
   printf("%s", escrita);
   int tamanho = sizeof(escrita);
-  char resultado = fputs(escrita, rank);
+  */
+  char resultado = fwrite(&j1, sizeof(j1), 1, rank);
   if(resultado == EOF){
     printf("\n Falha na gravação do resultado");
   }
