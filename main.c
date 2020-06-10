@@ -428,7 +428,7 @@ void Jogar(){
   system("clear"); //Limpar tela
   int tabuaux [64]; //Vetor criado para pegar números aleatorios para o tabuleiro
   int tabu[4][4]; //Matriz criada para ser utilizada como tabuleiro
-  int tabut[4][4] = {1,2,3,4,5,6,7,8,9,10,11,12,0, 13,14,15};
+  int tabut[4][4] = {1,2,3,4,5,6,7,8,9,10,11,12,0,13,14,15};
   int tabucerto[4][4]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0}; //Gerando tabuleiro certo
   int cont = 0; //Contador da posição do vetor
   int teste = 0; //Variável de teste para poder sair do "DO" caso tenha dado certo a operação da função "testeVariavel"
