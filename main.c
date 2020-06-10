@@ -137,7 +137,7 @@ void Ranking(){
   printf("\n ---------------- ");
   printf("\n     PLACAR       \n");
   while(!feof(rank)){ //Verificando se está nulo para frente
-    resultado = fgets(Linha, 100, rank);
+    fgets(Linha, 100, rank);
     printf("    %s", Linha);
   }
   printf("\n \n"); //Pular duas linha
@@ -406,29 +406,20 @@ bool PosicaoCorreta(int numero, int tabu[4][4], int posicao [2]){
 }
 
 void SalvarResultado(int pontos){
-  char nomejogador [50];
   Jogador j1;
+  j1.jogadas = pontos;
   printf("\n PARABÉNS VOCÊ GANHOU !!");
   printf("\n\n Número de jogadas: %d",pontos); //Exibindo pontuação
   printf("\n Insira seu nome para o ranking: ");
-  scanf("%c", &j1.nome);
-  j1.jogadas = pontos;
+  scanf("%s", &j1.nome);
   FILE *rank; //Declarando o arquivo
   rank = fopen("ranking.txt", "a"); //Abrir documento
-  /* char escrita [100];
-  char espaço [] = " ";
+  char espaco [] = " ";
   char enter [] = "\n";
-  strcat(escrita, j1.nome);
-  strcat(escrita, espaço);
-  strcat(escrita, j1.jogadas);
-  strcat(escrita, enter); 
-  printf("%s", escrita);
-  int tamanho = sizeof(escrita);
-  */
-  char resultado = fwrite(&j1, sizeof(j1), 1, rank);
-  if(resultado == EOF){
-    printf("\n Falha na gravação do resultado");
-  }
+  fputs(enter, rank);
+  fputs(j1.nome, rank);
+  fputs(espaco, rank);
+  fprintf(rank, "%d", j1.jogadas);
   fclose(rank);
 }
 
@@ -437,6 +428,7 @@ void Jogar(){
   system("clear"); //Limpar tela
   int tabuaux [64]; //Vetor criado para pegar números aleatorios para o tabuleiro
   int tabu[4][4]; //Matriz criada para ser utilizada como tabuleiro
+  int tabut[4][4] = {1,2,3,4,5,6,7,8,9,10,11,12,0, 13,14,15};
   int tabucerto[4][4]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0}; //Gerando tabuleiro certo
   int cont = 0; //Contador da posição do vetor
   int teste = 0; //Variável de teste para poder sair do "DO" caso tenha dado certo a operação da função "testeVariavel"
@@ -469,26 +461,27 @@ void Jogar(){
   tabu[3][3]=0; //Colocando a posição zero no tabuleiro 
   do{
     system("clear");
-    ImprimeTabuleiro(tabu);
+    //ImprimeTabuleiro(tabu);
+    ImprimeTabuleiro(tabut); //Teste
     printf("\n Informe qual número deseja mover para o espaço vazio: ");
     scanf("%d", &numero);
     if(numero < 16){
-      posicao[0] = RetornaLinha(numero, tabu);
-      posicao[1] = RetornaColuna(numero, tabu);
-      if(PosicaoCorreta(numero, tabu, posicao) == true){
+      posicao[0] = RetornaLinha(numero, tabut);
+      posicao[1] = RetornaColuna(numero, tabut);
+      if(PosicaoCorreta(numero, tabut, posicao) == true){
         //Retirar Codiugo daqui
         for(int i = 0; i < 4; i++){
           for(int j = 0; j < 4; j++){
-            if(tabu[i][j] == 0){
+            if(tabut[i][j] == 0){
               posicaozero[0] = i;
               posicaozero[1] = j;
             }
           }
         }
         //Ate aqui
-        auxiliar = tabu[posicao[0]][posicao[1]];
-        tabu[posicao[0]][posicao[1]] = 0;
-        tabu[posicaozero[0]][posicaozero[1]] = auxiliar;
+        auxiliar = tabut[posicao[0]][posicao[1]];
+        tabut[posicao[0]][posicao[1]] = 0;
+        tabut[posicaozero[0]][posicaozero[1]] = auxiliar;
         pontos++;
       }else{
         printf("\n O número informado não pode trocar de casa com a posição 0\n\n");
@@ -500,7 +493,7 @@ void Jogar(){
         system("sleep 01");
       }
     }
-    retornoFinal = testaFinalTabuleiro(tabucerto,tabucerto); //Verifica se o tabuleiro está completo
+    retornoFinal = testaFinalTabuleiro(tabut,tabucerto); //Verifica se o tabuleiro está completo
   }while((numero =! 16 ) || (retornoFinal != 1)); //Verifica se a pessoa pressionou o número para saida OU se completou o tabuleiro
   printf("\n"); //Pula linha
   system("clear"); //Limpa tela
