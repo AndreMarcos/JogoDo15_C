@@ -428,7 +428,6 @@ void Jogar(){
   system("clear"); //Limpar tela
   int tabuaux [64]; //Vetor criado para pegar números aleatorios para o tabuleiro
   int tabu[4][4]; //Matriz criada para ser utilizada como tabuleiro
-  int tabut[4][4] = {1,2,3,4,5,6,7,8,9,10,11,12,0,13,14,15};
   int tabucerto[4][4]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0}; //Gerando tabuleiro certo
   int cont = 0; //Contador da posição do vetor
   int teste = 0; //Variável de teste para poder sair do "DO" caso tenha dado certo a operação da função "testeVariavel"
@@ -461,27 +460,26 @@ void Jogar(){
   tabu[3][3]=0; //Colocando a posição zero no tabuleiro 
   do{
     system("clear");
-    //ImprimeTabuleiro(tabu);
-    ImprimeTabuleiro(tabut); //Teste
+    ImprimeTabuleiro(tabu); 
     printf("\n Informe qual número deseja mover para o espaço vazio: ");
     scanf("%d", &numero);
     if(numero < 16){
-      posicao[0] = RetornaLinha(numero, tabut);
-      posicao[1] = RetornaColuna(numero, tabut);
-      if(PosicaoCorreta(numero, tabut, posicao) == true){
+      posicao[0] = RetornaLinha(numero, tabu);
+      posicao[1] = RetornaColuna(numero, tabu);
+      if(PosicaoCorreta(numero, tabu, posicao) == true){
         //Retirar Codiugo daqui
         for(int i = 0; i < 4; i++){
           for(int j = 0; j < 4; j++){
-            if(tabut[i][j] == 0){
+            if(tabu[i][j] == 0){
               posicaozero[0] = i;
               posicaozero[1] = j;
             }
           }
         }
         //Ate aqui
-        auxiliar = tabut[posicao[0]][posicao[1]];
-        tabut[posicao[0]][posicao[1]] = 0;
-        tabut[posicaozero[0]][posicaozero[1]] = auxiliar;
+        auxiliar = tabu[posicao[0]][posicao[1]];
+        tabu[posicao[0]][posicao[1]] = 0;
+        tabu[posicaozero[0]][posicaozero[1]] = auxiliar;
         pontos++;
       }else{
         printf("\n O número informado não pode trocar de casa com a posição 0\n\n");
@@ -493,7 +491,7 @@ void Jogar(){
         system("sleep 01");
       }
     }
-    retornoFinal = testaFinalTabuleiro(tabut,tabucerto); //Verifica se o tabuleiro está completo
+    retornoFinal = testaFinalTabuleiro(tabu,tabucerto); //Verifica se o tabuleiro está completo
   }while((numero =! 16 ) || (retornoFinal != 1)); //Verifica se a pessoa pressionou o número para saida OU se completou o tabuleiro
   printf("\n"); //Pula linha
   system("clear"); //Limpa tela
