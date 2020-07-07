@@ -26,15 +26,16 @@ espaço vazio para mover as peças.
 
 //FIM DOS INCLUDES
 
+//STRUCT do usuário 
 typedef struct Jogador{
-    char nome[50];
-    int jogadas;
-} Jogador;
+    char nome[50]; //Nome
+    int jogadas; //Pontuação
+} Jogador; //Nome da STRUCT
 
 
 //Função implementada para enfeitar a inicialização do jogo e apresentar uma mensagem de boas vindas 
 void CarregarJogo(){
-  for(int i = 0; i < 3 ; i++){ // For para apresentar a tela de Carregamento - VISUAL
+  for(int i = 0; i < 1 ; i++){ // For para apresentar a tela de Carregamento - VISUAL
     printf("\n"); //Pular linha
     printf("\n Carregando o jogo");
     system("sleep 01"); //Delay de 1 segundo
@@ -79,8 +80,7 @@ void SairDoJogo(){
   printf("\n Obrigado por ter jogado! ");
   system("sleep 01"); //Delay de 1 segundo
   system("clear"); //Limpa a tela
-}
-//------------------------------------------ PRONTO
+}//------------------------------------------ PRONTO
 
 //Funçao implementada para a impressão do Menu Principal
 int ImprimeMenu(){
@@ -92,8 +92,17 @@ int ImprimeMenu(){
   printf("| 4 - SAIR                       |\n");
   printf("|                                |\n");
   printf("|---- Opção Escolhida: ");
-} 
-//------------------------------------------ PRONTO
+} //------------------------------------------ PRONTO
+
+//Função criada para dar uma pausa, para que o usuário possa ter o tempo que precisar para a leitura das REGRAS, RANKING e COMO JOGAR
+void Pausa(){
+  printf("\n"); //Pula linha
+  char tecla[5]; //Variável criada para realizar a leitura de um caractere após a leitura 
+  printf("Aperte qualquer letra para continuar...");
+  scanf("%s",&tecla); //Captura da variável para prosseguir o programa
+  printf("\n"); //Pula linha
+  system("clear"); //Limpa a tela
+} //------------------------------------------ PRONTO
 
 //Função implementada para exibir as REGRAS
 void Regras(){
@@ -110,15 +119,13 @@ void Regras(){
   } //Fim IF verifica informações
   printf("\n"); //Pular linha
   while(!feof(regra)){
-    resultadoRegra = fgets(LinhaRegra, 100, regra);
-    printf("  %s", LinhaRegra);
+    resultadoRegra = fgets(LinhaRegra, 100, regra); //Ponteiro captura a linha que está sendo lida
+    if(resultadoRegra != NULL){ //Se a última posição do ponteiro não for nula
+      printf("  %s", LinhaRegra);
+    }
   }
-  char sairRegra[2];
-  printf("\n \n "); //Pular duas linha
-  printf("Pressione qualquer letra para continuar...");
-  scanf("%s",&sairRegra);
-  printf("\n");
-  system("clear");
+  Pausa(); //Chama a função de pausa no código
+  fclose(regra); //Fecha arquivo regras
 }
 //------------------------------------------ PRONTO
 
@@ -127,7 +134,7 @@ void Ranking(){
   system("clear"); //Limpar tela
   FILE *rank; //Declarando o arquivo
   char Linha [100]; //Variável para pegar a linha do ranking
-  char *resultado; //Receber resultado (ponteiro)
+  char *resultadoranking; //Receber resultado (ponteiro)
   rank = fopen("ranking.txt", "rt"); //Abrir documento
   if(rank == NULL){ //Verificando se foi feita a abertura
     printf("\n--------------------------------");
@@ -137,16 +144,15 @@ void Ranking(){
   printf("\n ---------------- ");
   printf("\n     PLACAR       \n");
   while(!feof(rank)){ //Verificando se está nulo para frente
-    fgets(Linha, 100, rank);
-    printf("    %s", Linha);
+    resultadoranking = fgets(Linha, 100, rank); //Ponteiro captura a linha que está sendo lida
+    if(resultadoranking != NULL){ //Se a ultima posição do ponteiro não for nulo
+      printf("    %s", Linha); //Imprime a linha
+    }
   }
   printf("\n \n"); //Pular duas linha
   printf(" ---------------- \n");
-  char tecla[5];
-  printf("Aperte qualquer letra para continuar...");
-  scanf("%s",&tecla);
-  system("clear");
-  fclose(rank);
+  Pausa(); //Chama a função de pausa no código
+  fclose(rank); //Fecha arquivo ranking
 }
 //------------------------------------------ PRONTO
 
@@ -184,244 +190,249 @@ void ImprimeTabuleiro (int tabu[4][4]){ //Recebe uma matriz de inteiros como par
 
 //Função implementada para fazer testes enquanto é gerado o Tabuleiro
 int testeVariavel(int numero, int tabu[4][4], int i, int j){
-  if( j == 3){
-    if(i == 3){
-      return 1;
-    }else{
-      for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 4; j++){
-          if(numero == tabu[i][j]){
-            return 0;
-          }
-        } 
-      }
-    }
-  }else{  
-  for(int i = 0; i < 4; i++){
-    for(int j = 0; j < 4; j++){
-      if(numero == tabu[i][j]){
-        return 0;
-      }
-    } 
-  }
-}
-  return 1;
-}
+   // 1 - VERDADEIRO | 0 - FALSO
+  if( j == 3){ //Se está na ultima coluna
+    if(i == 3){ //Se está na ultima linha
+      return 1; //Retorna verdadeiro
+    }else{ // Se não estiver na última linha 
+      for(int i = 0; i < 4; i++){ //Roda linha
+        for(int j = 0; j < 4; j++){ //Roda coluna
+          if(numero == tabu[i][j]){ //Testa se o número gerado já existe no tabuleiro
+            return 0; //Retorna falso
+          } //Fim IF
+        } //Fim FOR coluna
+      } //Fim FOR linha
+    } //Fim ELSE
+  }else{  //Se não estiver na última coluna
+    for(int i = 0; i < 4; i++){ //Roda linha
+      for(int j = 0; j < 4; j++){ //Roda coluna
+        if(numero == tabu[i][j]){ //Testa se o número gerado já existe no tabuleiro
+          return 0; //Retorna falso
+        } //Fim IF
+      } //Fim FOR coluna
+    } //Fim FOR linha
+  } //Fim ELSE
+  return 1; //Retorna verdadeiro
+} //------------------------------------------------- PRONTO
 
+//Função implementada para explicar ao usuário a maneira como jogar e qual o objetivo dele - VISUAL e EXPLICATIVA
 void ComoJogar(){
-  system("clear");
-  printf("------------- COMO JOGAR ---------------\n");
-  printf(" Para jogar você deverá ordenar os");
-  printf("\n números em ordem crescente da esquerda");
-  printf("\n para direita e de cima para baixo");
-  printf("\n\n Para jogar você deverá digitar o número");
-  printf("\n que deseja mover para a posição 00 (vazia) quando for solicidado");
-  printf("\n");
-  char tecla[5];
-  printf("\nAperte qualquer letra para continuar...");
-  scanf("%s",&tecla);
-  system("clear");
-}
+  system("clear"); //Limpa tela
+  printf("|------------- COMO JOGAR -------------------|\n");
+  printf("| Para ganhar você deverá ordenar os         |");
+  printf("\n| números em ordem crescente da esquerda     |");
+  printf("\n| para direita e de cima para baixo          |");
+  printf("\n| Para jogar você deverá digitar o número    |");
+  printf("\n| que deseja mover para a posição 00 (vazia) |");
+  printf("\n| quando for solicitado                      |");
+  printf("\n|--------------------------------------------|");
+  printf("\n"); //Pula linha
+  Pausa(); //Chama a função de dar uma pausa na repodução do código
+  system("clear"); //Limpa tela
+} //---------------------------------------------------- PRONTO
 
 //Função implementada para verificar a finalizção do tabuleiro
 int testaFinalTabuleiro(int tabu[4][4], int tabucerto[4][4]){
   //0 - FALSO | 1 - VERDADEIRO
   for(int i = 0; i < 4; i++){ //Testa linha
     for(int j = 0; j < 4; j++){ //Testa coluna
-      if(tabu[i][j] != tabucerto[i][j]){
-        return 0; //Se não for igual
-      }
-    }
-  }
-  return 1; //Se for igual
-}
+      if(tabu[i][j] != tabucerto[i][j]){ //Condição se não são iguais
+        return 0; //Se não forem iguals
+     } //Fim IF
+    } //Fim FOR coluna
+  } //Fim FOR linha
+  return 1; //Se forem iguais
+} //-------------------------------------------------- PRONTO
 
+//Função criada para retornar a posição da linha do número que será movido no tabuleiro 
 int RetornaLinha(int numero, int tabu[4][4]){
-  int posicao;
-  for(int i = 0; i < 4; i++){
-    for(int j = 0; j < 4; j++){
-      if(numero==tabu[i][j]){
-        posicao = i;
-      }
-    }
-  }
-  return posicao;
-}
+  int posicao; //Váriavel par salvar a linha
+  for(int i = 0; i < 4; i++){ //Pecorre linhas
+    for(int j = 0; j < 4; j++){ //Pecorre colunas
+      if(numero==tabu[i][j]){ //Condição se a linha tem o número desejado
+        posicao = i; //Salva a linha
+      } //Fim IF
+    } //Fim FOR coluna
+  } //Fim FOR linha
+  return posicao; //Retorna a posição
+} //-------------------------------------------------- PRONTO
 
+//Função criada para retornar a posição da coluna do número que será movido no tabuleiro 
 int RetornaColuna(int numero, int tabu[4][4]){
-  int posicao;
-  for(int i = 0; i < 4; i++){
-    for(int j = 0; j < 4; j++){
-      if(numero==tabu[i][j]){
-        posicao = j;
-      }
-    }
-  }
-  return posicao;
-}
+  int posicao; //Váriavel par salvar a coluna
+  for(int i = 0; i < 4; i++){ //Pecorre linhas
+    for(int j = 0; j < 4; j++){ //Pecorre colunas
+      if(numero==tabu[i][j]){ //Condição se a coluna tem o número desejado
+        posicao = j; //Salva a coluna
+      } //Fim IF
+    } //Fim FOR coluna
+  } //Fim FOR linha
+  return posicao; //Retorna a posição
+} //-------------------------------------------------- PRONTO
 
 //Função implementada para verificar se o número pode ser movido para a posição 00 no tabuleiro
 bool PosicaoCorreta(int numero, int tabu[4][4], int posicao [2]){
-  int linha = posicao[0];
-  int coluna = posicao[1];
-  if(linha == 0){ //Se o número estiver na primera linha
-    if(coluna == 0){
+  int linha = posicao[0]; //Recebe a posição da linha do nímero
+  int coluna = posicao[1]; //Recebe a posição da coluna do número
+  if(linha == 0){ //Se o número estiver na primeira linha
+    if(coluna == 0){ //Se o número estiver na primeira coluna
       //Número na posicao (0,0)
-      if(tabu[linha][coluna+1] == 0){ //Direita
-        return true;
-      }else{ 
-        if(tabu[linha+1][coluna] == 0){ //Baixo
-          return true;
-        }else{
-          return false;
-        }
-      }
-    }
-    if(coluna == 1 || coluna == 2){
+      if(tabu[linha][coluna+1] == 0){ //Verifica se está a Direita
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver na direita
+        if(tabu[linha+1][coluna] == 0){ //Verifica se está a Baixo
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver a baixo
+          return false; //Retorna falso
+        } //Fim IF ELSE
+      } //Fim IF ELSE
+    } //Fim IF se não estiver na primeira linha e primeira coluna
+    if(coluna == 1 || coluna == 2){ //Se o número estiver na segunda ou terceira coluna
       //Número na posição (0,1) ou (0,2)
-      if(tabu[linha][coluna+1] == 0){ //Direita
-        return true;
-      }else{
-        if(tabu[linha][coluna-1] == 0){ //Esquerda
-          return true;
-        }else{
-          if(tabu[linha+1][coluna]==0){ //Baixo
-            return true;
-          }else{
-            return false;
-          }
-        }
-      }
-    }
-    if(coluna == 3){
+      if(tabu[linha][coluna+1] == 0){ //Verifica se está a Direita
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver na direita
+        if(tabu[linha][coluna-1] == 0){ //Verifica se está a Esquerda
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver na esquerda 
+          if(tabu[linha+1][coluna]==0){ //Verifica se está a Baixo
+            return true; //Retorna verdadeiro
+          }else{ //Se não estiver a baixo
+            return false; //Retorna falso
+          } //Fim IF ELSE
+        } //Fim IF ELSE
+      } //Fim IF ELSE
+    } //Fim IF se não estiver na segunda ou terceira coluna e primeira linha
+    if(coluna == 3){ //Se estiver na última coluna
       //Número na posição (0,3)
-      if(tabu[linha][coluna-1] == 0){ //Esquerda
-        return true;
-      }else{
-        if(tabu[linha+1][coluna] == 0){ //Baixo
-          return true;
-        }else{
-          return false;
-        }
-      }
-    }
-  }
+      if(tabu[linha][coluna-1] == 0){ //Verifica se está a Esquerda
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver na esquerda
+        if(tabu[linha+1][coluna] == 0){ //Verifica se está a Baixo
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver a baixo
+          return false; //Retorna falso
+        } //Fim IF ELSE
+      } //FIm IF ELSE
+    } //Fim IF se não estiver na terceira coluna e na primeira linha
+  } //FIM IF se não estiver na primeira linha
   if(linha == 1 || linha == 2){ //Se o número estiver na linha segunda ou terceira linha
-    if(coluna == 0){
+    if(coluna == 0){ //Se o número estiver na primeira coluna
       //Número na posição (1,0) ou (2,0)
-      if(tabu[linha][coluna+1] == 0){ //Direita
-        return true;
-      }else{
-        if(tabu[linha-1][coluna] == 0){ //Cima
-          return true;
-        }else{
-          if(tabu[linha+1][coluna] == 0){
-            return true;
-          }else{
-            return false;
-          }
-        }
-      }
-    }
-    if(coluna == 1 || coluna == 2){
+      if(tabu[linha][coluna+1] == 0){ //Verifica se está a Direita
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver a direita
+        if(tabu[linha-1][coluna] == 0){ //Verifica se está a Cima
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver a cima
+          if(tabu[linha+1][coluna] == 0){ //Verifica se está a Baixo
+            return true; // Retorna verdadeiro
+          }else{ //Se não estiver a baixo
+            return false; //Retorna falso
+          } //Fim IF ELSE
+        } //Fim IF ELSE
+      } //Fim IF ELSE
+    } //Fim IF se não estiver na primeira coluna da primeira ou segunda linha
+    if(coluna == 1 || coluna == 2){ //Se o número estiver na segunda ou terceira coluna
       //Número na posição (1,1) | (1,2) | (2,1) | (2,2)
-      if(tabu[linha][coluna+1] == 0){ //Direita
-        return true;
-      }else{
-        if(tabu[linha][coluna-1] == 0){ //Esquerda
-          return true;
-        }else{
-          if(tabu[linha-1][coluna] == 0){ //Cima
-            return true;
-          }else{
-            if(tabu[linha+1][coluna] == 0){ //Baixo
-              return true;
-            }else{
-              return false;
-            }
-          }
-        }
-      }
-    }
-    if(coluna == 3){
+      if(tabu[linha][coluna+1] == 0){ //Verifica se está a Direita
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver a Cima
+        if(tabu[linha][coluna-1] == 0){ //Verifica se está a Esquerda
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver a esquerda
+          if(tabu[linha-1][coluna] == 0){ //Verifica se está a Cima
+            return true; //Retorna verdadeiro
+          }else{ //Se não estiver a cima
+            if(tabu[linha+1][coluna] == 0){ //Verifica se está a Baixo
+              return true; //Retorna verdadeiro
+            }else{ //Se não estiver a baixo
+              return false; //Retorna falso
+            } //Fim IF ELSE
+          } //Fim IF ELSE
+        } //Fim IF ELSE
+      } //Fim IF ELSE
+    } //Fim IF se o número não estiver na segunda ou terceira coluna da segunda e terceira linha
+    if(coluna == 3){ //Se o número estiver na terceira coluna
       //Número na posicao (1,3) ou (2,3)
-      if(tabu[linha][coluna-1] == 0){ //Esquerda
-        return true;
-      }else{
-        if(tabu[linha-1][coluna] == 0){ //Cima
-          return true;
-        }else{
-          if(tabu[linha+1][coluna] == 0){ //Baixo
-            return true;
-          }else{
-            return false;
-          }
-        }
-      }
-    }
-  }
+      if(tabu[linha][coluna-1] == 0){ //Verifica se está a Esquerda
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver a esquerda
+        if(tabu[linha-1][coluna] == 0){ //Verifica se está a Cima
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver a cima
+          if(tabu[linha+1][coluna] == 0){ //Verifica se está a Baixo
+            return true; //Retorna verdadeiro
+          }else{ //Se não estiver a baixo
+            return false; //Retorna falso
+          } //Fim IF ELSE
+        } //Fim IF ELSE
+      } //Fim IF ELSE
+    } //Fim IF se o número não estiver na última coluna da segunda ou terceira linha
+  } //Se o número não estiver na primeira ou segunda linha
   if(linha == 3){ //Se o número estiver na ultima linha
-    if(coluna == 0){
+    if(coluna == 0){ //Se o número estiver na primeira coluna
       //Número na posição (3,0)
-      if(tabu[linha][coluna+1] == 0){ //Direita
-        return true;
-      }else{
-        if(tabu[linha-1][coluna] == 0){ //Cima
-          return true;
-        }else{
-          return false;
-        }
-      }
-    }
-    if(coluna == 1 || coluna == 2){
+      if(tabu[linha][coluna+1] == 0){ //Verifica se está a Direita
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver a direita
+        if(tabu[linha-1][coluna] == 0){ //Verifica se está a Cima
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver a cima
+          return false; //Retorna falso
+        } //Fim IF ELSE
+      } //Fim IF ELSE
+    } //Fim IF se o número não estiver na primeira coluna da última linha
+    if(coluna == 1 || coluna == 2){ //Se estiver na segunda ou terceira coluna
       //Número na posição (3,1) ou (3,2)
-      if(tabu[linha][coluna+1] == 0){ //Direita
-        return true;
-      }else{
-        if(tabu[linha][coluna-1] == 0){ //Esquerda
-          return true;
-        }else{
-          if(tabu[linha-1][coluna] == 0){ //Cima
-            return true;
-          }else{
-            return false;
-          }
-        }
-      }
-    }
-    if(coluna == 3){
+      if(tabu[linha][coluna+1] == 0){ //Verifica se está a Direita
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver a direita
+        if(tabu[linha][coluna-1] == 0){ //Verifica se está a Esquerda
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver a esquerda
+          if(tabu[linha-1][coluna] == 0){ //Verifica se está a Cima
+            return true; //Retorna verdadeiro
+          }else{ //Se não estiver a cima
+            return false; //Retorna falso
+          } //Fim IF ELSE
+        } //Fim IF ELSE
+      } //Fim IF ELSE
+    } //Fim IF se o número não estiver na segunda ou terceira coluna da última linha
+    if(coluna == 3){ //Se estiver na última coluna
       //Número na posição (3,3)
-      if(tabu[linha][coluna-1] == 0){ //Esquerda
-        return true;
-      }else{
-        if(tabu[linha-1][coluna] == 0){ //Cima
-          return true;
-        }else{
-          return false;
-        }
-      }
-    }
-  }
-  return false;
-}
+      if(tabu[linha][coluna-1] == 0){ //Verifica se está a Esquerda
+        return true; //Retorna verdadeiro
+      }else{ //Se não estiver a direita
+        if(tabu[linha-1][coluna] == 0){ //Verifica se está a Cima
+          return true; //Retorna verdadeiro
+        }else{ //Se não estiver a cima
+          return false; //retorna falso
+        } //Fim IF ELSE
+      } //Fim IF ELSE
+    } //Fim IF se não estiver na última coluna e na última linha
+  } //Fim IF se não estiver na última linha
+  return false; //Caso não seja possível realizar a troca pois o número 00 não está ao redor do número
+} //-------------------------------------------------- PRONTO
 
+//Função criada para inserir o ganhador no arquivo RANKING.TXT
 void SalvarResultado(int pontos){
-  Jogador j1;
-  j1.jogadas = pontos;
-  printf("\n PARABÉNS VOCÊ GANHOU !!");
+  Jogador j1; //Criando a struct do jogador para armazenar seus dados
+  j1.jogadas = pontos; //Recebendo a quantidade de jogadas foi necessário para ganhar o jogo
+  printf("\n PARABÉNS VOCÊ GANHOU !!"); 
   printf("\n\n Número de jogadas: %d",pontos); //Exibindo pontuação
-  printf("\n Insira seu nome para o ranking: ");
-  scanf("%s", &j1.nome);
+  printf("\n Insira seu nome para o ranking: "); 
+  scanf("%s", &j1.nome); //Recebendo o nome do jogador ganhador
   FILE *rank; //Declarando o arquivo
-  rank = fopen("ranking.txt", "a"); //Abrir documento
-  char espaco [] = " ";
-  char enter [] = "\n";
-  fputs(enter, rank);
-  fputs(j1.nome, rank);
-  fputs(espaco, rank);
-  fprintf(rank, "%d", j1.jogadas);
-  fclose(rank);
-}
+  rank = fopen("ranking.txt", "a"); //Abrindo o documento
+  char espaco [] = " "; //Variável para inserir espaçamento no documento
+  char enter [] = "\n"; //Variável para pular linha do documento
+  fputs(enter, rank); //Pulando linha no arquivo aberto rank
+  fputs(j1.nome, rank); //Inserindo o nome no arquivo aberto rank
+  fputs(espaco, rank); //Inserindo espaço no arquivo aberto rank
+  fprintf(rank, "%d", j1.jogadas); //Inserindo o número de jogadas no arquivo aberto rank
+  fclose(rank); //Fechando o rank
+} //-------------------------------------------------- PRONTO
 
 //Função implementada para iniciar o MODO DE JOGO
 void Jogar(){
@@ -436,63 +447,65 @@ void Jogar(){
   int pontos =0; //Conta o número de jogadas
   int posicao [2]; //Posicao do número no tabuleiro
   int posicaozero [2]; //Posição do número 0 no tabuleiro
-  int retornoFinal = 0;
+  int retornoFinal = 0; //FVariável criada para receber o retorno da função testaFinalTabuleiro, se é verdadeira ou falsa
   srand((unsigned)time(NULL)); //Gerando seed aleátoria para o rand() - funçao que gera números aleatorios
   for(int i = 0; i < 64; i++){ //Gerando 64 números aleatorios de 1 a 15
     tabuaux[i]= 1 + (rand() % 15); //Gerando números aleatorios de 1 a 15 para o vetor auxiliar
-  }
-  printf("\n");
+  } //Fim FOR
+  printf("\n"); //Pula linha
   //Gerando o tabuleiro com os números aleatorios gerados
-  for(int i = 0; i < 4; i++){ //Linha
-    for(int j = 0; j < 4; j++){ //Coluna
+  for(int i = 0; i < 4; i++){ //Percorre Linha
+    for(int j = 0; j < 4; j++){ //Percorre Coluna
       do{
-        if(testeVariavel(tabuaux[cont], tabu, i, j)==1){
-          teste = 1;
-          tabu[i][j] = tabuaux[cont];
-        }else{
-          cont++;
-        }
-      }while(teste != 1);
-      teste = 0;
-      cont ++;
-    }
-  }
-  tabu[3][3]=0; //Colocando a posição zero no tabuleiro 
-  do{
-    system("clear");
-    ImprimeTabuleiro(tabu); 
+        if(testeVariavel(tabuaux[cont], tabu, i, j)==1){ //Verifica se o número não será repetido no tabuleiro que será jogado
+          teste = 1; //Se o número puder ser inserido o teste será igual a 1 para sair ddo loop
+          tabu[i][j] = tabuaux[cont]; //Insere o número já gerado no tabuleiro
+        }else{ //Se o número que está na posição atual do vetor não puder ser inserido
+          cont++; //Adiciona +1 na posição do vetor onde foi gerado os números
+        } //Fim IF ELSE
+      }while(teste != 1); //Roda o código até o número ser inserido 
+      teste = 0; //Reinincia a variável teste
+      cont ++; //Adiciona +1 na posição do vetor onde foi gerado os números
+    } //Fim FOR coluna
+  } //Fim FOR linha
+  tabu[3][3]=0; //Colocando a posição zero no tabuleiro
+  numero = 0;
+  retornoFinal = 0; 
+  //Verifica se a pessoa pressionou o número para saida OU se completou o tabuleiro
+  while((numero != 16) && (retornoFinal != 1)){ //Se o número for diferente de 16 (que é o número para sair do jogo) ou diferente de 1 (que é verdadeiro para o tabuleiro completo) segue o jogo
+    system("clear"); //limpa tela
+    ImprimeTabuleiro(tabu); //imprime tabuleiro
     printf("\n Informe qual número deseja mover para o espaço vazio: ");
-    scanf("%d", &numero);
-    if(numero < 16){
-      posicao[0] = RetornaLinha(numero, tabu);
-      posicao[1] = RetornaColuna(numero, tabu);
-      if(PosicaoCorreta(numero, tabu, posicao) == true){
-        //Retirar Codiugo daqui
-        for(int i = 0; i < 4; i++){
-          for(int j = 0; j < 4; j++){
-            if(tabu[i][j] == 0){
-              posicaozero[0] = i;
-              posicaozero[1] = j;
-            }
-          }
-        }
-        //Ate aqui
-        auxiliar = tabu[posicao[0]][posicao[1]];
-        tabu[posicao[0]][posicao[1]] = 0;
-        tabu[posicaozero[0]][posicaozero[1]] = auxiliar;
-        pontos++;
-      }else{
+    scanf("%d", &numero); //Lê número a ser trocado de posição
+    if((numero < 16) && (numero > 0)){ //O número deve estar entre 0 e 16
+      posicao[0] = RetornaLinha(numero, tabu);  //Recebe a linha que se encontra o número
+      posicao[1] = RetornaColuna(numero, tabu); //Recebe a coluna que se encontra o número
+      if(PosicaoCorreta(numero, tabu, posicao) == true){ //Verifica se o número pode trocar de posição com o 00
+      //Receber a posicao do 00 (vazio) no tabuleiro
+        for(int i = 0; i < 4; i++){ //Roda linha
+          for(int j = 0; j < 4; j++){ //Roda coluna
+            if(tabu[i][j] == 0){ //Testa se a posição contem o número 0
+              posicaozero[0] = i; //Recebe e salva linha
+              posicaozero[1] = j; //Recebe e salva coluna
+            } //Fim IF
+          } //Fim FOR coluna
+        } //Fim FOR linha
+        auxiliar = tabu[posicao[0]][posicao[1]]; //Utiliza a variável auxiliar para guardar o número que será trocado
+        tabu[posicao[0]][posicao[1]] = 0; //Insere o 00 (vazio) na posição antiga do número
+        tabu[posicaozero[0]][posicaozero[1]] = auxiliar;  //Insere o número na posição antiga do 00 (vazio)
+        pontos++; //Insere +1 na variável que armazena o número de jogadas que foram realizadas
+      }else{ //Se o número não puder ser trocado com o 00
         printf("\n O número informado não pode trocar de casa com a posição 0\n\n");
-        system("sleep 01");
-      }
-    }else{
-      if(numero != 16){
+        system("sleep 01"); //Delay de 1 segundo
+      } //Fim IF ELSE
+    }else{ //Se o número for maior que 15 ou menor que 1
+      if(numero != 16){  //Se o número for diferente de 16 (que é o número para sair do jogo)
         printf("\n Número informado é incorreto, se deseja sair, por favor, digite o número 16 \n");
-        system("sleep 01");
-      }
-    }
+        system("sleep 01"); //Delay 1 segundo
+      } //Fim IF
+    } //Fim IF ELSE
     retornoFinal = testaFinalTabuleiro(tabu,tabucerto); //Verifica se o tabuleiro está completo
-  }while((numero =! 16 ) || (retornoFinal != 1)); //Verifica se a pessoa pressionou o número para saida OU se completou o tabuleiro
+  } //Fim while
   printf("\n"); //Pula linha
   system("clear"); //Limpa tela
   if(retornoFinal == 1){ //Verificando se a pessoa saiu por ter ganhado
@@ -500,33 +513,29 @@ void Jogar(){
     printf("\n"); //Pula linha
     system("clear"); //Limpa tela
     printf("\n Salvando seus dados...");
-    system("sleep 01");
-    printf("\n");
-    system("clear");
-  }
-}
-
-// -----------------------------------------
-
-
+    system("sleep 01"); //Delay 1 segundo
+    printf("\n"); //`Pula linha
+    system("clear"); //Limpa tela
+  } //Fim IF
+} //-------------------------------------------------- PRONTO
 
 //Função Principal do Jogo (main)
 int main(void) {
-  //CarregarJogo(); //Inicializando o JOGO com as Boas Vindas
-  int opcao;
+  CarregarJogo(); //Inicializando o JOGO com as Boas Vindas
+  int opcao; //Variável criada para receber a opção escolhida pelo jogador
   do{
-    ImprimeMenu();
-    scanf("%d", &opcao);
+    ImprimeMenu(); //Imprime o Menu
+    scanf("%d", &opcao); //Lê a opção
     switch(opcao){
       case 1: // Escolha JOGAR
-        ComoJogar();
-        Jogar();
+        ComoJogar();  //Exibe as informações de como jogar
+        Jogar(); //Inicia a função do MODO DE JOGO
         break; 
       case 2: // Escolha RANKING
-        Ranking();
+        Ranking(); //Exibe o ranking
         break;
       case 3: // Escolha REGRAS
-        Regras();
+        Regras(); //Exibe as regras
         break;
       case 4: // Escolha SAIR
         SairDoJogo(); // Finalizando Jogo
@@ -536,6 +545,6 @@ int main(void) {
         system("sleep 1"); //Delay de 1 segundo
         system("clear"); //Limpar a tela
     }
-  }while(opcao != 4);
-  return 0;
-}
+  }while(opcao != 4); //Se a opção escolhida for diferente de 4 o loop continuar para mostrar o MENU
+  return 0; //Retorno padrão do main
+} //Fim do programa

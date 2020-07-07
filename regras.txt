@@ -2,8 +2,7 @@ _____________________________________________________________________
 |                         REGRAS                                    |
 |                                                                   |
 |  * Para mover a peça desejada o jogador deverá digitar            |
-|    número da peça e depois o lado que será movida: a –            |
-|    esquerda; s – baixo; d – direita e w – cima.                   |
+|    número da peça.                                                |
 |                                                                   |
 |  * O movimento das peças só pode ser feito utilizando o           |
 |    espaço vazio.                                                  |
